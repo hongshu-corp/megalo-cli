@@ -27,7 +27,8 @@ module.exports = function () {
     ],
     ['@babel/plugin-proposal-class-properties',
       { 'loose': true }
-    ]
+    ],
+    ['@babel/plugin-proposal-optional-chaining']
   ]
 
   // if (isUseTypescript) {

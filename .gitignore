@@ -10,3 +10,4 @@ temp
 .versions
 package-lock.json
 dist-*
+.idea

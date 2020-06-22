@@ -3,7 +3,7 @@ const chalk = require('chalk')
 const path = require('path')
 const { getCssExt } = require('@megalo/cli-share-utils')
 const { findExisting, checkFileExistsSync } = require('./utils')
-const generateEntryFiles = require( './generateEntryFiles' )
+const generateEntryFiles = require('./generateEntryFiles')
 
 module.exports = (api, options) => {
   const platform = process.env.PLATFORM
@@ -29,13 +29,13 @@ module.exports = (api, options) => {
       const { pagesEntry, subPackagesRoot } = resolveEntry()
 
       // 生成转h5用到的入口临时文件
-      generateEntryFiles(pagesEntry);
+      generateEntryFiles(pagesEntry)
 
       if (options.isSpa) {
         // 入口配置
         chainConfig.entry('index')
           .add(api.resolve('.megalo-h5-tmp/entry.js'))
-        
+
         chainConfig
           .devtool(isProd && !options.productionSourceMap ? 'none' : 'source-map')
           .target('web')
@@ -111,12 +111,12 @@ module.exports = (api, options) => {
           .pathinfo(false)
 
         // html出口文件配置
-        for (const [key, value] of pages) {
+        for (const [key] of pages) {
           chainConfig.plugin(`html-webpack-plugin-${key}`)
           .use(HtmlWebpackPlugin, [{
             filename: `${key}.html`,
             template: '.megalo-h5-tmp/index.html',
-            chunks: [`${key}`],
+            chunks: [`${key}`]
           }])
           .end()
         }
@@ -133,7 +133,7 @@ module.exports = (api, options) => {
                 preserveWhitespace: false
               }
             })
-            
+
       // babel
       chainConfig.module
         .rule('js')
@@ -144,7 +144,7 @@ module.exports = (api, options) => {
       // css相关loader
       generateCssLoaders(chainConfig)
 
-        // 图片
+      // 图片
       chainConfig.module
       .rule('picture')
         .test(/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/)
@@ -167,9 +167,8 @@ module.exports = (api, options) => {
           .use('url-loader')
             .loader('url-loader')
             .options(genUrlLoaderOptions('fonts', subPackagesRoot))
-      
-      
-          // 插件
+
+      // 插件
       chainConfig
         .plugin('process-plugin')
           .use(webpack.ProgressPlugin)
@@ -180,7 +179,6 @@ module.exports = (api, options) => {
         .plugin('mini-css-extract-plugin')
 					.use(MiniCssExtractPlugin, [{ filename: `[name].${cssExt}` }])
 					.end()
-      
 
       chainConfig.stats({
         all: false,
@@ -198,7 +196,6 @@ module.exports = (api, options) => {
         chainConfig.plugin('provide-plugin')
           .use(webpack.ProvidePlugin, [{ 'Megalo': [megaloAPIPath, 'default'] }])
       }
-
     }
   })
 
@@ -296,7 +293,7 @@ module.exports = (api, options) => {
       fallback: {
         loader: 'file-loader',
         options: {
-          publicPath: function(url, resourcePath, context) {
+          publicPath: function (url, resourcePath, context) {
             // 找出资源属于哪一个子包
             const subPackage = subPackagesRoot.find(subPackage => {
               return path.relative(context, resourcePath).includes(subPackage + '/')
